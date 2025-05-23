@@ -1,0 +1,28 @@
+### Variables
+@baseUrl = http://localhost:8000
+
+### Get Homepage
+GET {{baseUrl}}/
+Content-Type: application/json
+
+### Get All Articles
+GET {{baseUrl}}/articles
+Content-Type: application/json
+
+### Get Article by ID
+GET {{baseUrl}}/article/1
+Content-Type: application/json
+
+### Create New Article
+POST {{baseUrl}}/article
+Content-Type: application/json
+
+{
+    "id": "3",
+    "title": "New Article",
+    "content": "This is a new article content"
+}
+
+### Delete Article
+DELETE {{baseUrl}}/article/3
+Content-Type: application/json 
