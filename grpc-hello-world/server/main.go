@@ -12,10 +12,11 @@ import (
 	"google.golang.org/grpc"
 )
 
+// server implements the Greeter gRPC service and tracks request metrics
 type server struct {
-	pb.UnimplementedGreeterServer
-	requestCount uint64
-	startTime    time.Time
+	pb.UnimplementedGreeterServer           // Required for forward compatibility with gRPC
+	requestCount                  uint64    // Tracks total number of requests received
+	startTime                     time.Time // When server started, used for throughput calculation
 }
 
 func (s *server) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {
