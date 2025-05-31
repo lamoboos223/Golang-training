@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:8080
+
+### Create a new task
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+    "title": "Learn Go",
+    "description": "Study Go programming language",
+    "status": false
+}
+
+### Get a task by ID
+GET {{baseUrl}}/tasks?id=e05df603-24d6-4abf-ba48-a8fefa9ed72f
+
+### Update a task
+PUT {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+    "id": "9313c909-b672-485c-804b-9302c08fee32",
+    "title": "Learn Go - Updated",
+    "description": "Study Go programming language and its concurrency features",
+    "status": true
+}
+
+### Delete a task
+DELETE {{baseUrl}}/tasks?id=9313c909-b672-485c-804b-9302c08fee32
+
+### Get all tasks (if implemented)
+GET {{baseUrl}}/tasks 
