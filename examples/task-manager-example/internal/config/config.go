@@ -24,11 +24,11 @@ func NewConfig() *Config {
 	cfg := &Config{
 		RepositoryType: "memory",
 		Database: DatabaseConfig{
-			Host:     "localhost",
-			Port:     5432,
-			User:     "postgres",
-			Password: "postgres",
-			DBName:   "taskmanager",
+			Host:     "",
+			Port:     0,
+			User:     "",
+			Password: "",
+			DBName:   "",
 		},
 	}
 

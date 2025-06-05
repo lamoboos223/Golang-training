@@ -56,7 +56,8 @@ func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 
 	log.Info("Task created successfully",
 		zap.String("task_id", createdTask.ID),
-		zap.String("title", createdTask.Title))
+		zap.String("title", createdTask.Title),
+		zap.Bool("status", createdTask.Status))
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(createdTask)

@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"sync"
 	"task-manager-example/internal/config"
 	"task-manager-example/internal/domain"
 	"task-manager-example/internal/repo"
@@ -12,8 +13,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// this should be the implementation of the TaskRepository interface
 type TaskRepository struct {
 	db *sql.DB
+	mu sync.RWMutex
 }
 
 func NewTaskRepository(cfg *config.Config) (repo.TaskRepository, error) {
@@ -45,10 +48,12 @@ func NewTaskRepository(cfg *config.Config) (repo.TaskRepository, error) {
 		return nil, err
 	}
 
-	return &TaskRepository{db: db}, nil
+	return &TaskRepository{db: db, mu: sync.RWMutex{}}, nil
 }
 
 func (r *TaskRepository) CreateTask(task domain.Task) (domain.Task, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	// Generate new ID and timestamps
 	task.ID = uuid.New().String()
 	task.CreatedAt = time.Now()
@@ -81,6 +86,8 @@ func (r *TaskRepository) CreateTask(task domain.Task) (domain.Task, error) {
 }
 
 func (r *TaskRepository) GetTask(id string) (domain.Task, error) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 	var task domain.Task
 	query := `SELECT id, title, description, status, created_at, updated_at FROM tasks WHERE id = $1`
 
@@ -101,6 +108,8 @@ func (r *TaskRepository) GetTask(id string) (domain.Task, error) {
 }
 
 func (r *TaskRepository) UpdateTask(task domain.Task) (domain.Task, error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	query := `
 		UPDATE tasks 
 		SET title = $1, description = $2, status = $3, updated_at = $4
@@ -132,6 +141,8 @@ func (r *TaskRepository) UpdateTask(task domain.Task) (domain.Task, error) {
 }
 
 func (r *TaskRepository) DeleteTask(id string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	query := `DELETE FROM tasks WHERE id = $1`
 	result, err := r.db.Exec(query, id)
 	if err != nil {
@@ -151,6 +162,8 @@ func (r *TaskRepository) DeleteTask(id string) error {
 }
 
 func (r *TaskRepository) GetAllTasks() []domain.Task {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 	var tasks []domain.Task
 	query := `SELECT id, title, description, status, created_at, updated_at FROM tasks`
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"task-manager-example/internal/domain"
 	"task-manager-example/internal/repo"
 	"task-manager-example/pkg/logger"
@@ -9,14 +10,20 @@ import (
 )
 
 type TaskService struct {
-	repo   repo.TaskRepository
-	logger *logger.Logger
+	repo      repo.TaskRepository
+	processor *TaskProcessor
+	logger    *logger.Logger
 }
 
 func NewTaskService(repo repo.TaskRepository) *TaskService {
+	processor := NewTaskProcessor(repo)
+	// Start the processor with a background context
+	processor.Start(context.Background())
+
 	return &TaskService{
-		repo:   repo,
-		logger: logger.New(),
+		repo:      repo,
+		processor: processor,
+		logger:    logger.New(),
 	}
 }
 
@@ -31,6 +38,10 @@ func (s *TaskService) CreateTask(task domain.Task) (domain.Task, error) {
 			zap.String("title", task.Title))
 		return domain.Task{}, err
 	}
+
+	// Send task to background processor
+	// this will wait for 2 seconds before processing the task and set the status to true to mimic a long running task
+	go s.processor.ProcessTask(createdTask)
 
 	s.logger.Info("Task created successfully",
 		zap.String("task_id", createdTask.ID),
