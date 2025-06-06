@@ -73,6 +73,6 @@ func main() {
 		}
 	}()
 
-	// Wait forever
+	// Wait forever because we are using go routines to start the http and grpc servers
 	select {}
 }
