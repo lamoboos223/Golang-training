@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package task;
+
+option go_package = "task-manager-example/internal/api/proto";
+
+// Task represents a task in the system
+message Task {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  bool status = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+// CreateTaskRequest represents a request to create a new task
+message CreateTaskRequest {
+  string title = 1;
+  string description = 2;
+  bool status = 3;
+}
+
+// CreateTaskResponse represents the response after creating a task
+message CreateTaskResponse {
+  Task task = 1;
+}
+
+// GetTaskRequest represents a request to get a task by ID
+message GetTaskRequest {
+  string id = 1;
+}
+
+// GetTaskResponse represents the response containing a task
+message GetTaskResponse {
+  Task task = 1;
+}
+
+// UpdateTaskRequest represents a request to update a task
+message UpdateTaskRequest {
+  Task task = 1;
+}
+
+// UpdateTaskResponse represents the response after updating a task
+message UpdateTaskResponse {
+  Task task = 1;
+}
+
+// DeleteTaskRequest represents a request to delete a task
+message DeleteTaskRequest {
+  string id = 1;
+}
+
+// DeleteTaskResponse represents the response after deleting a task
+message DeleteTaskResponse {}
+
+// GetAllTasksRequest represents a request to get all tasks
+message GetAllTasksRequest {}
+
+// GetAllTasksResponse represents the response containing all tasks
+message GetAllTasksResponse {
+  repeated Task tasks = 1;
+}
+
+// TaskService provides methods to manage tasks
+service TaskService {
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
+  rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
+  rpc UpdateTask(UpdateTaskRequest) returns (UpdateTaskResponse);
+  rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse);
+  rpc GetAllTasks(GetAllTasksRequest) returns (GetAllTasksResponse);
+}
